@@ -74,19 +74,29 @@ type QueryResult struct {
 
 type Api struct {
 	Host     string
-	Endpoint string
 	ApiKey   string
 }
 
-func NewApi(host, endpoint, apiKey string) (*Api, error) {
+func NewApi(host, apiKey string) (*Api, error) {
 	api := &Api{
 		Host:     host,
-		Endpoint: endpoint,
 		ApiKey:   apiKey,
 	}
 
-	if host == "" || endpoint == "" || apiKey == "" {
+	if host == "" || apiKey == "" {
 		return nil, errors.New("todos os campos são obrigatorios")
 	}
 	return api, nil
+}
+
+func (api *Api) UrlForEndpoint(endpoint string, params map[string]string) string {
+	url := "https://" + api.Host + "/" + endpoint
+	if len(params) > 0 {
+		url += "?"
+		for k, v := range params {
+			url += k + "=" + v + "&"
+		}
+	}
+
+	return url
 }
