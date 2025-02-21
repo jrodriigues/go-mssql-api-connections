@@ -72,8 +72,21 @@ type QueryResult struct {
 	Rows *sql.Rows
 }
 
-type Destination struct {
+type Api struct {
 	Host     string
 	Endpoint string
 	ApiKey   string
+}
+
+func NewApi(host, endpoint, apiKey string) (*Api, error) {
+	api := &Api{
+		Host:     host,
+		Endpoint: endpoint,
+		ApiKey:   apiKey,
+	}
+
+	if host == "" || endpoint == "" || apiKey == "" {
+		return nil, errors.New("todos os campos são obrigatorios")
+	}
+	return api, nil
 }
