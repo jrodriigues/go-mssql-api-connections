@@ -1,8 +1,10 @@
 package connections
 
 import (
+	"bytes"
 	"database/sql"
 	"errors"
+	"net/http"
 	"os"
 
 	_ "github.com/microsoft/go-mssqldb"
@@ -73,14 +75,14 @@ type QueryResult struct {
 }
 
 type Api struct {
-	Host     string
-	ApiKey   string
+	Host   string
+	ApiKey string
 }
 
 func NewApi(host, apiKey string) (*Api, error) {
 	api := &Api{
-		Host:     host,
-		ApiKey:   apiKey,
+		Host:   host,
+		ApiKey: apiKey,
 	}
 
 	if host == "" || apiKey == "" {
@@ -99,4 +101,21 @@ func (api *Api) UrlForEndpoint(endpoint string, params map[string]string) string
 	}
 
 	return url
+}
+
+func (api *Api) NewRequest(method, url string, data []byte, headers map[string]string) (*http.Request, error) {
+	req, err := http.NewRequest(method, url, bytes.NewBuffer(data))
+	if err != nil {
+		return nil, err
+	}
+
+	for k, v := range headers {
+		req.Header.Set(k, v)
+	}
+
+	return req, nil
+}
+
+func NewClient() *http.Client {
+	return &http.Client{}
 }
