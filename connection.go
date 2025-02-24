@@ -96,7 +96,7 @@ func NewApi(host, apiKey string) (*Api, error) {
 }
 
 func (api *Api) UrlForEndpoint(endpoint string, params map[string]string) string {
-	url := "https://" + api.Host + "/" + endpoint
+	url := api.Host + "/" + endpoint
 	if len(params) > 0 {
 		url += "?"
 		for k, v := range params {
